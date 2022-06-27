@@ -1,0 +1,9 @@
+version: '3'
+services:
+  db:
+    image: postgres #镜像
+    restart: always
+    ports: 
+      - "5432:5432" #在此端口设置数据库和访问docker外部 此操作可在容器内部、外部和当前机器上访问数据库
+    environment:
+      - POSTGRES_PASSWORD=123456
