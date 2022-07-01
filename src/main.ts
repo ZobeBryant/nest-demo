@@ -7,7 +7,10 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true, // 根据dto过滤response body无效属性
     transform: true, // 将response body转换为具体的dto实例
-    forbidNonWhitelisted: true // 与whitelist属性一起使用时，如果请求有多余字段，则报错
+    forbidNonWhitelisted: true, // 与whitelist属性一起使用时，如果请求有多余字段，则报错
+    transformOptions:{
+      enableImplicitConversion: true //自动隐式转换
+    }
   }));
   await app.listen(3000);
 }

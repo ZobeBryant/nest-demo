@@ -1,4 +1,7 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, NotFoundException, Param, Patch, Post, Query, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Inject, NotFoundException, Param, Patch, Post, Query, Res } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
@@ -6,32 +9,16 @@ import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 
 @Controller('coffees')
 export class CoffeesController {
-    constructor(private readonly coffeesService: CoffeesService){
-
+    // 将coffeesService依赖注入到CoffesController中
+    constructor(private readonly coffeesService: CoffeesService, @Inject(REQUEST) private readonly request: Request){
+        
+        console.log('CoffeesController created');
     }
-    // 不建议自己操作响应对象对象 
-    // @Get()
-    // findAll(@Res() response){
-    //     response.status(200).send('This actions return all coffees');
-    // }
-    // 建议使用nestjs标准
-    // @Get()
-    // findAll(){
-    //     return 'This actions return all coffees';
-    // }
     @Get()
-    findAll(@Query() paginationQuery){
-        // const {limit, offset} = paginationQuery
-        return this.coffeesService.findAll();
-        // return `This actions return all coffees. Limit: ${limit}, offset: ${offset}`;
+    findAll(@Query() paginationQuery: PaginationQueryDto){
+        return this.coffeesService.findAll(paginationQuery);
     }
    
-    
-
-    // @Get(':id')
-    // findOne(@Param() params){
-    //     return `This action returns #${params.id} coffee`;
-    // }
     @Get(':id')
     findOne(@Param('id') id: string){
 
@@ -40,22 +27,8 @@ export class CoffeesController {
             throw new NotFoundException(`Coffee #${id} not found`)
         }
         return coffee;
-        //return `This action returns #${id} coffee`;
     }
 
-    // @Post()
-    // create(@Body() body){
-    //     return body;
-    // }
-    //@Post()
-    // @HttpCode(HttpStatus.GONE) //自定义状态码 不建议自定义状态码，建议使用nestjs标准
-    // create(@Body('name') body){
-    //     return body;
-    // }
-    // @Post()
-    // create(@Body() body){
-    //     return this.coffeesService.create(body);
-    // }
     @Post()
     create(@Body() createCoffeeDto: CreateCoffeeDto){
         console.log(createCoffeeDto instanceof CreateCoffeeDto);
@@ -65,14 +38,11 @@ export class CoffeesController {
     @Patch(':id')
     update(@Param('id') id: string, @Body() updateCoffeeDto: UpdateCoffeeDto){
         return this.coffeesService.update(id, updateCoffeeDto);
-        
-        // return `This action updates #${id} coffee`;
     }
 
     @Delete(':id')
     remove(@Param('id') id: string){
         return this.coffeesService.remove(id);
-        // return `This action removes #${id} coffee`;
     }
 
 }
