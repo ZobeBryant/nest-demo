@@ -1,5 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ApiKeyGuard } from './common/guards/api-key.guard';
@@ -16,6 +17,15 @@ async function bootstrap() {
       enableImplicitConversion: true //自动隐式转换
     }
   }));
+
+  const options = new DocumentBuilder()
+    .setTitle('Ilovcoffee')
+    .setDescription('Coffee application')
+    .setVersion('1.0')
+    .build()
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('api', app, document);
+
   app.useGlobalFilters(new HttpExceptionFilter()) // 全局范围内使用ExceptionFilter
   // app.useGlobalGuards(new ApiKeyGuard()); // 全局范围内使用Guard
 
