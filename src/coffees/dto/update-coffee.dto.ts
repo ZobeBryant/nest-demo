@@ -5,7 +5,7 @@
 //     readonly flavors?: string[];
 // }
 
-import { PartialType } from "@nestjs/mapped-types";
+import { PartialType } from "@nestjs/swagger";
 import { CreateCoffeeDto } from "./create-coffee.dto";
 
 // PartialType不仅使属性可选，还继承了通过装饰器应用的所有验证规则

@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Inject, NotFoundException, Param, Patch, Post, Query, Res, SetMetadata, UsePipes, ValidationPipe } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
+import { ApiForbiddenResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { Protocol } from 'src/common/decorators/protocol.decorator';
 import { Public } from 'src/common/decorators/public.decorator';
@@ -10,6 +11,7 @@ import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 
 // @UsePipes(ValidationPipe) 控制器范围内的pipe
+@ApiTags('coffee') // 将该controller的api单独分组
 @Controller('coffees')
 export class CoffeesController {
     // 将coffeesService依赖注入到CoffesController中
@@ -20,6 +22,7 @@ export class CoffeesController {
 
     // @UsePipes(ValidationPipe) // 方法范围内的pipe
     // @SetMetadata('isPublic', true)
+    @ApiForbiddenResponse({status: 403, description: 'Forbidden.'})
     @Public()
     @Get()
     /* async */ findAll(@Protocol('https') protocol: string, @Query() paginationQuery: PaginationQueryDto){
